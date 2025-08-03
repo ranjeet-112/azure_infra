@@ -1,0 +1,15 @@
+trigger: none
+
+pool:
+  name: Default
+  demands:
+    - agent.name -equals ranjeetsee
+
+steps:
+
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: 'latest'
+  - script: terraform init
+
+
