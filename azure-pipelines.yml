@@ -1,15 +1,39 @@
-trigger: none
+agent: ranjeetsee
 
-pool:
-  name: Default
-  demands:
-    - agent.name -equals ranjeetsee
+trigger: none
 
 steps:
 
 - task: TerraformInstaller@1
   inputs:
     terraformVersion: 'latest'
-  - script: terraform init
 
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)\root'
+    backendServiceArm: 'infra_test2'
+    backendAzureRmStorageAccountName: 'stgranjeet'
+    backendAzureRmContainerName: 'tfcontainer'
+    backendAzureRmKey: 'tfstatefile'
 
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'validate'
+    workingDirectory: '$(System.DefaultWorkingDirectory)\root'
+
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)\root'
+    environmentServiceNameAzureRM: 'infra_test2'
+
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)\root'
+    environmentServiceNameAzureRM: 'infra_test2'
